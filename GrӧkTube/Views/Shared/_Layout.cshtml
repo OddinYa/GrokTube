@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using GrӧkTube.Models;
+
+@model UserModel;
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -9,6 +13,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
+
     <header>
         <div class="backdrop" id="backdrop"></div>
         <nav class="navbar navbar-expand-md navbar-light border-bottom fixed-top">
@@ -37,11 +42,55 @@
                     <button class="btn btn-link text-dark">
                         <i class="fas fa-bell"></i>
                     </button>
-                    <div class="ms-3">
-                        <img src="https://zefirka.club/uploads/posts/2023-01/1673278260_2-zefirka-club-p-serii-chelovek-na-avu-2.png"
-                             class="rounded-circle avatar-img"
+
+                    @if (Model == null) {
+
+                        <div class="ms-3 dropdown">
+                            <img src="https://zefirka.club/uploads/posts/2023-01/1673278260_2-zefirka-club-p-serii-chelovek-na-avu-2.png"
+                            class="rounded-circle avatar-img dropdown-toggle"
+                            id="userDropdown"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            alt="Гость">
+
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <div class="px-4 py-3">
+                                    <h6 class="mb-0">Гость</h6>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-sign-in me-2"></i>Войти
+                                </a>
+                            </div>
+                        </div>
+                    }else{
+                    <div class="ms-3 dropdown">
+                        <img src=@Model.AvatarUrl
+                             class="rounded-circle avatar-img dropdown-toggle"
+                             id="userDropdown"
+                             data-bs-toggle="dropdown"
+                             aria-expanded="false"
                              alt="Гость">
+
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <div class="px-4 py-3">
+                                <h6 class="mb-0">@Model.Username</h6>
+                                <small class="text-muted">user@example.com</small>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-user me-2"></i>Профиль
+                            </a>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-cog me-2"></i>Настройки
+                            </a>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-sign-out-alt me-2"></i>Выйти
+                            </a>
+                        </div>
                     </div>
+                    }
+
                 </div>
             </div>
         </nav>

@@ -14,8 +14,9 @@ namespace GrӧkTube.Controllers
         }
 
         public IActionResult Index()
-        {
-            return View();
+        {   
+            
+            return View(null);
         }
 
         public IActionResult Privacy()
