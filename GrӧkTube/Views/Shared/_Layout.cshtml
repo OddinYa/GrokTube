@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - GrӧkTube</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <div class="backdrop" id="backdrop"></div>
+        <nav class="navbar navbar-expand-md navbar-light border-bottom fixed-top">
+            <div class="container-fluid">
+                <button class="btn btn-link px-3 sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <a class="navbar-brand mx-2" asp-controller="Home" asp-action="Index">
+                    <span class="logo-text">GrӧkTube</span>
+                </a>
+
+                <div class="search-bar">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Поиск">
+                        <button class="btn btn-outline-secondary">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-link text-dark">
+                        <i class="fas fa-video"></i>
+                    </button>
+                    <button class="btn btn-link text-dark">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <div class="ms-3">
+                        <img src="https://zefirka.club/uploads/posts/2023-01/1673278260_2-zefirka-club-p-serii-chelovek-na-avu-2.png"
+                             class="rounded-circle avatar-img"
+                             alt="Гость">
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+        <nav class="nav flex-column">
+            <a class="nav-link" href="#">
+                <i class="fas fa-home me-3"></i> Главная
+            </a>
+            <a class="nav-link" href="#">
+                <i class="fas fa-fire me-3"></i> Тренды
+            </a>
+            <a class="nav-link" href="#">
+                <i class="fas fa-users me-3"></i> Подписки
+            </a>
+            <hr>
+            <a class="nav-link" href="#">
+                <i class="fas fa-bookmark me-3"></i> Закладки
+            </a>
+            <a class="nav-link" href="#">
+                <i class="fas fa-history me-3"></i> История просмотра
+            </a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        @RenderBody()
+    </main>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

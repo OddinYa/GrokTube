@@ -1,0 +1,119 @@
+/* Основные настройки */
+html {
+    scroll-behavior: smooth;
+}
+
+
+body {
+    padding-top: 56px;
+    background-color: #f9f9f9;
+    font-family: 'Roboto', Arial, sans-serif;
+    min-height: 100vh;
+}
+
+/* Хедер */
+.navbar {
+    height: 56px;
+    background: white !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.logo-text {
+    font-weight: 500;
+    color: #ff0000;
+    font-size: 1.8rem;
+}
+
+.search-bar {
+    flex: 0 1 640px;
+    margin: 0 40px;
+}
+
+.avatar-img {
+    width: 36px;
+    height: 36px;
+    object-fit: cover;
+}
+
+/* Сайдбар */
+.sidebar {
+    position: fixed;
+    left: -240px; /* Полностью скрыт за пределами экрана */
+    top: 56px;
+    bottom: 0;
+    width: 240px;
+    background: white;
+    z-index: 1000;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+    border-right: 1px solid #e0e0e0;
+    will-change: transform; /* Оптимизация анимации */
+}
+
+    .sidebar.active {
+        transform: translateX(240px); /* Сдвигаем на свою ширину */
+    }
+
+/* Основной контент */
+.main-content {
+    width: 100%;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+}
+
+    .main-content.with-sidebar {
+        margin-left: 240px; /* Освобождаем место при открытом сайдбаре */
+    }
+
+/* Затемнение фона */
+.backdrop {
+    position: fixed;
+    top: 56px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    pointer-events: none; /* Чтобы не блокировал клики когда неактивен */
+}
+
+    .backdrop.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+/* Стили для навигации */
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 8px;
+    color: #030303 !important;
+}
+
+    .nav-link:hover {
+        background: rgba(0,0,0,0.05);
+    }
+
+    .nav-link i {
+        width: 24px;
+        margin-right: 12px;
+    }
+
+/* Адаптивность */
+@media (min-width: 992px) {
+    .sidebar {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 240px;
+    }
+
+    .backdrop {
+        display: none !important;
+    }
+}

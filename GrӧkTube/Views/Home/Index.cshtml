@@ -1,0 +1,80 @@
+﻿@{
+    ViewData["Title"] = "Главная страница";
+}
+
+<link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
+
+<div class="container-fluid mt-3 px-4">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4 video-grid">
+        <!-- Видео карточка 1 -->
+        <div class="col video-card">
+            <div class="card h-100 border-0 bg-transparent">
+                <div class="position-relative thumbnail-container">
+                    <img src="https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg" 
+                         class="card-img-top rounded thumbnail" 
+                         alt="Превью видео">
+                    <span class="position-absolute bottom-0 end-0 bg-dark text-white p-1 m-1 rounded duration-badge">10:15</span>
+                </div>
+                <div class="card-body p-2">
+                    <div class="d-flex">
+                        <img src="https://via.placeholder.com/36" 
+                             class="rounded-circle me-2 channel-icon" 
+                             width="36" 
+                             height="36" 
+                             alt="Автор">
+                        <div class="video-info">
+                            <h6 class="card-title mb-0 video-title">Название видео</h6>
+                            <small class="text-muted channel-name">Имя автора</small>
+                            <div class="text-muted small video-stats">100K просмотров • 2 дня назад</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Видео карточка 2 -->
+        <div class="col video-card">
+            <div class="card h-100 border-0 bg-transparent">
+                <div class="position-relative thumbnail-container">
+                    <img src="https://i.ytimg.com/vi/hx2jaSC_2Ao/hq720.jpg" 
+                         class="card-img-top rounded thumbnail" 
+                         alt="Превью видео">
+                    <span class="position-absolute bottom-0 end-0 bg-dark text-white p-1 m-1 rounded duration-badge">15:30</span>
+                </div>
+                <div class="card-body p-2">
+                    <div class="d-flex">
+                        <img src="https://via.placeholder.com/36" 
+                             class="rounded-circle me-2 channel-icon" 
+                             width="36" 
+                             height="36" 
+                             alt="Автор">
+                        <div class="video-info">
+                            <h6 class="card-title mb-0 video-title">Другое интересное видео</h6>
+                            <small class="text-muted channel-name">Другой автор</small>
+                            <div class="text-muted small video-stats">250K просмотров • 1 неделя назад</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Добавьте остальные карточки -->
+    </div>
+</div>
+
+
+
+<script>
+    // Добавляем класс при открытии сайдбара
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        
+        sidebarToggle.addEventListener('click', function() {
+            document.body.classList.toggle('sidebar-open');
+            
+            // Обновляем сетку после анимации
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 300);
+        });
+    });
+</script>
