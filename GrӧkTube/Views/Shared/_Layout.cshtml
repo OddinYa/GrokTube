@@ -14,6 +14,33 @@
 </head>
 <body>
 
+    <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="authModalLabel">Авторизация</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form asp-controller="Registration" asp-action="Login" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="login" class="form-label">Логин</label>
+                            <input type="text" class="form-control" id="login" name="Login" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Пароль</label>
+                            <input type="password" class="form-control" id="password" name="Password" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="submit" class="btn btn-primary">Войти</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <header>
         <div class="backdrop" id="backdrop"></div>
         <nav class="navbar navbar-expand-md navbar-light border-bottom fixed-top">
@@ -58,9 +85,9 @@
                                     <h6 class="mb-0">Гость</h6>
                                 </div>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-sign-in me-2"></i>Войти
-                                </a>
+                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#authModal">
+                                        <i class="fas fa-sign-in me-2"></i>Войти
+                                    </a>
                             </div>
                         </div>
                     }else{
@@ -70,7 +97,7 @@
                              id="userDropdown"
                              data-bs-toggle="dropdown"
                              aria-expanded="false"
-                             alt="Гость">
+                             alt=@Model.Username>
 
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <div class="px-4 py-3">
@@ -98,20 +125,24 @@
 
     <aside class="sidebar" id="sidebar">
         <nav class="nav flex-column">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="#" >
                 <i class="fas fa-home me-3"></i> Главная
             </a>
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#authModal">
+                
                 <i class="fas fa-fire me-3"></i> Тренды
             </a>
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#authModal">
+                
                 <i class="fas fa-users me-3"></i> Подписки
             </a>
             <hr>
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#authModal">
+                
                 <i class="fas fa-bookmark me-3"></i> Закладки
             </a>
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#authModal">
+                
                 <i class="fas fa-history me-3"></i> История просмотра
             </a>
         </nav>
@@ -120,10 +151,23 @@
     <main class="main-content">
         @RenderBody()
     </main>
+    <script>
+        document.querySelectorAll('[data-auth-required]').forEach(element => {
+            element.addEventListener('click', function (e) {
+                if ((@Model == null ? "true" : "false")) {
+                    e.preventDefault();
+                    new bootstrap.Modal(document.getElementById('authModal')).show();
+                }
+            });
+        });
+   </script>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
+
+
 </html>

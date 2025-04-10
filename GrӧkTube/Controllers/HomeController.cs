@@ -1,4 +1,4 @@
-using GrӧkTube.Models;
+﻿using GrӧkTube.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -19,10 +19,7 @@ namespace GrӧkTube.Controllers
             return View(null);
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+        
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

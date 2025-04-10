@@ -10,10 +10,4 @@
     <_ContentIncludedByDefault Remove="wwwroot\css\index.css" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DAO\" />
-    <Folder Include="Entities\" />
-    <Folder Include="Views\Stub\" />
-  </ItemGroup>
-
 </Project>
