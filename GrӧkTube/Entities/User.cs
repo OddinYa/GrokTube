@@ -10,9 +10,6 @@
 
         public string Race { get; set; }
 
-
-
-
     }
 }
 

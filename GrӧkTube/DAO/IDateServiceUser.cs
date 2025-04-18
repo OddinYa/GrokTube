@@ -7,5 +7,7 @@ namespace GrӧkTube.DAO
         public void SaveUsers(User user);
 
         public User GetUser(int id);
+
+        public User FindUser(string login, string password);
     }
 }

@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http.HttpResults;
+using GrӧkTube.Entities;
 
 namespace GrӧkTube.Controllers
 {
@@ -17,8 +19,8 @@ namespace GrӧkTube.Controllers
             {
                 var claims = new List<Claim>
         {
-            new(ClaimTypes.Name, login),
-            new("CustomClaim", "Example")
+            new(ClaimTypes.Name, login)
+           
         };
 
                 var identity = new ClaimsIdentity(claims,
@@ -33,17 +35,42 @@ namespace GrӧkTube.Controllers
                         ExpiresUtc = DateTime.UtcNow.AddHours(2)
                     });
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Stub", "Stub");
             }
 
             TempData["Error"] = "Invalid credentials";
-            return RedirectToAction("Login");
+            return BadRequest("");
         }
 
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home"); 
+        }
         private bool IsValidUser(string login, string password)
         {
-            // Ваша проверка в базе данных
-            return false;
+            var user = _userDAO.FindUser(login, password);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Registration(User user) { 
+            
+            _userDAO.SaveUsers(user);
+            await Login(user.Login,user.HashPassword);
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Registration()
+        {
+            return View();
         }
     }
 }

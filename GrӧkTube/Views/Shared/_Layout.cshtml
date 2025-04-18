@@ -35,6 +35,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
                         <button type="submit" class="btn btn-primary">Войти</button>
+                        <button type="button" class="btn btn-primary">Регистрация</button>
                     </div>
                 </form>
             </div>
@@ -125,7 +126,7 @@
 
     <aside class="sidebar" id="sidebar">
         <nav class="nav flex-column">
-            <a class="nav-link" href="#" >
+            <a class="nav-link" asp-controller="Home" asp-action="Index">
                 <i class="fas fa-home me-3"></i> Главная
             </a>
             <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#authModal">
