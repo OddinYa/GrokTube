@@ -16,6 +16,7 @@ namespace GrӧkTube.Controllers
         public IActionResult Index()
         {   
             
+
             return View(null);
         }
 
@@ -26,10 +27,6 @@ namespace GrӧkTube.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        [HttpGet]
-        public async Task<IActionResult> Stub()
-        {
-            return View();
-        }
+        
     }
 }

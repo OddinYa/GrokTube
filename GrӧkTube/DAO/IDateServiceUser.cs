@@ -9,5 +9,8 @@ namespace GrӧkTube.DAO
         public User GetUser(int id);
 
         public User FindUser(string login, string password);
+
+        public User GetUserByLogin(string login);
+        public bool LoginExists(string login);
     }
 }

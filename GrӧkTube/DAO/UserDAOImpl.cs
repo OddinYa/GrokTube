@@ -1,28 +1,30 @@
 ﻿
 using GrӧkTube.Entities;
 using GrӧkTube.Repository;
+using GrӧkTube.Service;
 
 namespace GrӧkTube.DAO
 {
     public  class UserDAOImpl : IDateServiceUser
     {
-        private UsersTable userTable;
+        private UsersTable _userTable;
+        private UserService _userService;
 
        public UserDAOImpl()
         {
-            userTable = UsersTable.GetIntanse();
+            _userTable = UsersTable.GetIntanse();
+            _userService = new UserService();
         }
 
 
         public void SaveUsers(User user)
         {   
-
-            userTable.Users.Add(user);
+            _userTable.Users.Add(user);
         }
 
         public User GetUser(int id)
         {
-            return userTable.Users.FirstOrDefault<User>(u => u.Id == id);
+            return _userTable.Users.FirstOrDefault<User>(u => u.Id == id);
         }
 
         public User FindUser(string login, string password)
@@ -30,22 +32,26 @@ namespace GrӧkTube.DAO
             if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
                 return null;
 
-
-            var user = userTable.Users.Where<User>(u => u.Login == login
-            && u.HashPassword == GetHashPassword(password)).FirstOrDefault();
+            var user = _userTable.Users.Where<User>(u => u.Login == login
+            && u.HashPassword == _userService.GetHashPassword(password)).FirstOrDefault();
 
             return user;
         }
 
-
-        private string GetHashPassword(string password)
+        public bool LoginExists(string login)
         {
-            using (var sha256 = System.Security.Cryptography.SHA256.Create())
+           if(_userTable.Users.Exists(u => u.Login == login))
             {
-                byte[] bytes = System.Text.Encoding.UTF8.GetBytes(password);
-                byte[] hashBytes = sha256.ComputeHash(bytes);
-                return Convert.ToBase64String(hashBytes);
+                return true;
             }
+           return false;
+        }
+
+        public User GetUserByLogin(string login)
+        {
+           var user = _userTable.Users.FirstOrDefault(u => u.Login == login);
+
+            return user;
         }
     }
 }

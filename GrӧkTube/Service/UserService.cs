@@ -9,13 +9,21 @@ namespace GrӧkTube.Service
 
         public string GetHashPassword(string password)
         {
-            return _passwordHasher.HashPassword(null, password);
+            using (var sha256 = System.Security.Cryptography.SHA256.Create())
+            {
+                byte[] bytes = System.Text.Encoding.UTF8.GetBytes(password);
+                byte[] hashBytes = sha256.ComputeHash(bytes);
+                return Convert.ToBase64String(hashBytes);
+            }
         }
 
         public bool IsPasswordCorrect(string password, User user)
         {
-            var result = _passwordHasher.VerifyHashedPassword(user, user.HashPassword, password);
-            return result == PasswordVerificationResult.Success;
+           if(user.HashPassword != GetHashPassword(password))
+            {
+                return false;
+            }
+           return true;
         }
     }
 }

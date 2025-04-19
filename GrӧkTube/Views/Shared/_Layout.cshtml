@@ -8,6 +8,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - GrӧkTube</title>
+
+    <link rel="icon" type="image/png" href ="~/img/logo.png" />
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -21,21 +24,28 @@
                     <h5 class="modal-title" id="authModalLabel">Авторизация</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form asp-controller="Registration" asp-action="Login" method="post">
+                <form id="loginForm" method="post" asp-controller="Registration" asp-action="Login">
                     <div class="modal-body">
+
+                      <div id="loginError" class="alert alert-danger mb-3" style="display: none;"></div>
+
                         <div class="mb-3">
                             <label for="login" class="form-label">Логин</label>
-                            <input type="text" class="form-control" id="login" name="Login" required>
+                            <input type="text" class="form-control" id="login" name="login" required>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Пароль</label>
-                            <input type="password" class="form-control" id="password" name="Password" required>
+                            <input type="password" class="form-control" id="password" name="password" required>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                        <button type="submit" class="btn btn-primary">Войти</button>
-                        <button type="button" class="btn btn-primary">Регистрация</button>
+                        <button type="submit" class="btn btn-primary" id="loginSubmitBtn">
+                            <span id="loginBtnText">Войти</span>
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Registration", "Registration")'">
+                            Регистрация
+                        </button>
                     </div>
                 </form>
             </div>
@@ -152,16 +162,73 @@
     <main class="main-content">
         @RenderBody()
     </main>
+
     <script>
-        document.querySelectorAll('[data-auth-required]').forEach(element => {
-            element.addEventListener('click', function (e) {
-                if ((@Model == null ? "true" : "false")) {
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const loginForm = document.getElementById('loginForm');
+            const loginError = document.getElementById('loginError');
+            let isSubmitting = false;
+
+            if (loginForm) {
+                // Отключаем встроенную валидацию
+                loginForm.setAttribute('novalidate', '');
+
+                loginForm.addEventListener('submit', async function (e) {
                     e.preventDefault();
-                    new bootstrap.Modal(document.getElementById('authModal')).show();
-                }
-            });
+                    e.stopImmediatePropagation(); // Блокируем другие обработчики
+
+                    if (isSubmitting) return;
+                    isSubmitting = true;
+
+                    // Очищаем ВСЕ существующие ошибки
+                    document.querySelectorAll('.alert-danger').forEach(el => {
+                        if (el !== loginError) el.remove();
+                    });
+
+                    // Скрываем нашу ошибку
+                    loginError.style.display = 'none';
+                    loginError.textContent = '';
+
+                    // Устанавливаем состояние загрузки
+                    const submitBtn = document.getElementById('loginSubmitBtn');
+                    const originalBtnHtml = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Вход...';
+                    submitBtn.disabled = true;
+
+                    try {
+                        const response = await fetch(loginForm.action, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: new URLSearchParams({
+                                login: document.getElementById('login').value,
+                                password: document.getElementById('password').value
+                            })
+                        });
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            window.location.href = result.redirectUrl || '/';
+                        } else {
+                            loginError.textContent = result.error || 'Неверный логин или пароль';
+                            loginError.style.display = 'block';
+                        }
+                    } catch (error) {
+                        loginError.textContent = 'Ошибка соединения с сервером';
+                        loginError.style.display = 'block';
+                    } finally {
+                        isSubmitting = false;
+                        const submitBtn = document.getElementById('loginSubmitBtn');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnHtml;
+                    }
+                });
+            }
         });
-   </script>
+    </script>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

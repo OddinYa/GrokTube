@@ -21,24 +21,5 @@
    
 });
 
-$(document).ready(function () {
-    $('#authModal form').submit(function (e) {
-        e.preventDefault();
 
-        $.ajax({
-            url: $(this).attr('action'),
-            method: 'POST',
-            data: $(this).serialize(),
-            success: function (response) {
-                if (response.success) {
-                    window.location.reload();
-                } else {
-                    $('#authModal .modal-body').prepend(
-                        `<div class="alert alert-danger">${response.error}</div>`
-                    );
-                }
-            }
-        });
-    });
-});
 
