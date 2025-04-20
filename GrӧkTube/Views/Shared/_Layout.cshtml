@@ -43,7 +43,7 @@
                         <button type="submit" class="btn btn-primary" id="loginSubmitBtn">
                             <span id="loginBtnText">Войти</span>
                         </button>
-                        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Registration", "Registration")'">
+                        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Form", "Registration")'">
                             Регистрация
                         </button>
                     </div>
@@ -181,11 +181,7 @@
                     if (isSubmitting) return;
                     isSubmitting = true;
 
-                    // Очищаем ВСЕ существующие ошибки
-                    document.querySelectorAll('.alert-danger').forEach(el => {
-                        if (el !== loginError) el.remove();
-                    });
-
+                   
                     // Скрываем нашу ошибку
                     loginError.style.display = 'none';
                     loginError.textContent = '';

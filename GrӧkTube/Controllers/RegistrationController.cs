@@ -77,7 +77,7 @@ namespace GrӧkTube.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Registration(RegistrationDto dto)
+        public async Task<IActionResult> Form(RegistrationDto dto)
         {
             if (!ModelState.IsValid)
             {
@@ -105,7 +105,7 @@ namespace GrӧkTube.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Registration()
+        public async Task<IActionResult> Form()
         {
             return View();
         }
