@@ -85,7 +85,7 @@ namespace GrӧkTube.Controllers
             {
                 // Проверка капчи
                 if (string.IsNullOrEmpty(dto.CaptchaDrawnDigit) ||
-                    dto.CaptchaDrawnDigit != "drawn") 
+                    dto.CaptchaDrawnDigit != dto.CaptchaExpectedDigit) 
                 {
                     ModelState.AddModelError("CaptchaDrawnDigit", "Пожалуйста, правильно нарисуйте цифру");
                     dto.CaptchaExpectedDigit = new Random().Next(0, 10).ToString();
