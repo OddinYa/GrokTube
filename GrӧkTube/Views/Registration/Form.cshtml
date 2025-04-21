@@ -1,5 +1,8 @@
 ﻿@model GrӧkTube.Models.DTO.RegistrationDto
 
+<script src="~/js/form.js"></script>
+<link rel="stylesheet" href="~/css/captcha.css" />
+
 <div class="container mt-5">
     <div class="row justify-center">
         <div class="col-md-8 col-lg-6">
@@ -9,7 +12,7 @@
                 </div>
                 
                 <div class="card-body p-4">
-                    <form asp-action="Register" method="post" class="needs-validation" novalidate>
+                    <form asp-action="Form" method="post" class="needs-validation" novalidate>
                        
                         <div class="mb-3">
                             <label asp-for="Name" class="form-label">Имя</label>
@@ -56,6 +59,25 @@
                                 <option value="Тролль">Тролль</option>
                             </select>
                             <span asp-validation-for="Race" class="invalid-feedback"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Капча: нарисуйте цифру <span id="captcha-digit" class="fw-bold">@Model.CaptchaExpectedDigit</span></label>
+                            <input type="hidden" asp-for="CaptchaExpectedDigit" value="@Model.CaptchaExpectedDigit" />
+                            <input type="hidden" asp-for="CaptchaDrawnDigit" id="drawn-digit" />
+
+                            <div class="card mb-2">
+                                <div class="card-body p-2">
+                                    <canvas id="captcha-canvas" width="200" height="100"
+                                            style="border:1px solid #ddd; touch-action: none;"></canvas>
+                                </div>
+                            </div>
+
+                            <button type="button" id="clear-canvas" class="btn btn-sm btn-outline-secondary">
+                                Очистить
+                            </button>
+                            <span asp-validation-for="CaptchaDrawnDigit" class="invalid-feedback"></span>
+                            <div class="form-text">Нарисуйте цифру, показанную выше</div>
                         </div>
 
                         
@@ -140,6 +162,22 @@
             }
         });
 
+        // Проверка совпадения паролей на клиенте
+        document.addEventListener('DOMContentLoaded', function () {
+            const password = document.querySelector('input[name="Password"]');
+            const confirmPassword = document.querySelector('input[name="ConfirmPassword"]');
+
+            function validatePassword() {
+                if (password.value !== confirmPassword.value) {
+                    confirmPassword.setCustomValidity("Пароли не совпадают");
+                } else {
+                    confirmPassword.setCustomValidity('');
+                }
+            }
+
+            password.addEventListener('change', validatePassword);
+            confirmPassword.addEventListener('keyup', validatePassword);
+        });
        
     </script>
 }

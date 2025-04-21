@@ -1,0 +1,11 @@
+﻿#captcha-canvas {
+    background-color: #f8f9fa;
+    cursor: crosshair;
+    display: block;
+    margin: 0 auto;
+}
+
+#captcha-digit {
+    font-size: 1.2em;
+    color: #dc3545;
+}
