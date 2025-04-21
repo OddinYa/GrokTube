@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using GrӧkTube.Entities;
 using GrӧkTube.Service;
 using GrӧkTube.Models.DTO;
+using System.Reflection;
+using static System.Net.WebRequestMethods;
 
 namespace GrӧkTube.Controllers
 {
@@ -19,8 +21,8 @@ namespace GrӧkTube.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string login, string password)
         {
-           
-            var user = _userDAO.GetUserByLogin(login);
+            User user = null;
+           // var user = _userDAO.GetUserByLogin(login);
 
           
             if (user == null || !_userService.IsPasswordCorrect(password, user))
@@ -79,35 +81,58 @@ namespace GrӧkTube.Controllers
         [HttpPost]
         public async Task<IActionResult> Form(RegistrationDto dto)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return View(dto);
+                // Проверка капчи
+                if (string.IsNullOrEmpty(dto.CaptchaDrawnDigit) ||
+                    dto.CaptchaDrawnDigit != "drawn") 
+                {
+                    ModelState.AddModelError("CaptchaDrawnDigit", "Пожалуйста, правильно нарисуйте цифру");
+                    dto.CaptchaExpectedDigit = new Random().Next(0, 10).ToString();
+
+                    ViewBag.User = null;
+                    return View("Form", dto);
+                }
             }
+                // Проверка уникальности логина
+                //      if (_userDAO.LoginExists(dto.Login))
+                //  {
+                //      ModelState.AddModelError(nameof(dto.Login), "Логин уже занят");
+                //      return View(dto);
+                //  }
 
-            // Проверка уникальности логина
-            if (_userDAO.LoginExists(dto.Login))
-            {
-                ModelState.AddModelError(nameof(dto.Login), "Логин уже занят");
-                return View(dto);
+                var user = new User
+                {
+                    Name = dto.Name,
+                    Login = dto.Login,
+                    HashPassword = _userService.GetHashPassword(dto.Password),
+                    Race = dto.Race
+                };
+
+                _userDAO.SaveUsers(user);
+                await Login(user.Login, user.HashPassword);
+
+                  UserModel userModel = new UserModel()
+                {
+					  Username = user.Login,
+                      AvatarUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvaFGZs_ToRrlAbs2ecdmB5Rgil9o-ndsVvg&s"
+                };
+            
+
+            return RedirectToAction("Index", "Home",userModel);
             }
-
-            var user = new User
-            {
-                Name = dto.Name,
-                Login = dto.Login,
-                HashPassword = _userService.GetHashPassword(dto.Password),
-                Race = dto.Race
-            };
-
-            _userDAO.SaveUsers(user);
-            await Login(user.Login,user.HashPassword);
-            return RedirectToAction("Index", "Home");
-        }
+        
 
         [HttpGet]
         public async Task<IActionResult> Form()
         {
-            return View();
+            RegistrationDto model = new RegistrationDto
+            {
+                CaptchaExpectedDigit = new Random().Next(0, 10).ToString()
+            };
+
+            ViewBag.User = null;
+            return View("Form",model);
         }
     }
 }

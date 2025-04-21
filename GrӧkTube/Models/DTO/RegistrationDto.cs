@@ -14,11 +14,11 @@ namespace GrӧkTube.Models.DTO
         public string Login { get; set; }
 
         [Required(ErrorMessage = "Пароль обязателен")]
+        [StringLength(100, ErrorMessage = "Пароль должен быть от {2} до {1} символов", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [StringLength(100, MinimumLength = 6, ErrorMessage = "Пароль от 6 до 100 символов")]
         public string Password { get; set; }
 
-        [Required(ErrorMessage = "Подтвердите пароль")]
+        [Required(ErrorMessage = "Подтверждение пароля обязательно")]
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Пароли не совпадают")]
         public string ConfirmPassword { get; set; }
@@ -26,5 +26,11 @@ namespace GrӧkTube.Models.DTO
         [Required(ErrorMessage = "Выберите расу")]
         [StringLength(20, ErrorMessage = "Название расы слишком длинное")]
         public string Race { get; set; }
+
+
+        [Required(ErrorMessage = "Пожалуйста, нарисуйте цифру")]
+        public string CaptchaDrawnDigit { get; set; }
+
+        public string CaptchaExpectedDigit { get; set; }
     }
 }

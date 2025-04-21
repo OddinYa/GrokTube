@@ -1,6 +1,8 @@
 ﻿@using GrӧkTube.Models;
+@{
+    var user = ViewBag.User as UserModel;
+}
 
-@model UserModel;
 
 <!DOCTYPE html>
 <html lang="en">
@@ -81,8 +83,8 @@
                         <i class="fas fa-bell"></i>
                     </button>
 
-                    @if (Model == null) {
-
+                    @if (user == null) {
+                     
                         <div class="ms-3 dropdown">
                             <img src="https://zefirka.club/uploads/posts/2023-01/1673278260_2-zefirka-club-p-serii-chelovek-na-avu-2.png"
                             class="rounded-circle avatar-img dropdown-toggle"
@@ -103,16 +105,16 @@
                         </div>
                     }else{
                     <div class="ms-3 dropdown">
-                        <img src=@Model.AvatarUrl
+                        <img src=@user.AvatarUrl
                              class="rounded-circle avatar-img dropdown-toggle"
                              id="userDropdown"
                              data-bs-toggle="dropdown"
                              aria-expanded="false"
-                             alt=@Model.Username>
+							  alt=Model.Username>
 
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <div class="px-4 py-3">
-                                <h6 class="mb-0">@Model.Username</h6>
+                                <h6 class="mb-0">@user.Username</h6>
                                 <small class="text-muted">user@example.com</small>
                             </div>
                             <div class="dropdown-divider"></div>
@@ -127,7 +129,7 @@
                             </a>
                         </div>
                     </div>
-                    }
+					 }
 
                 </div>
             </div>
