@@ -1,11 +1,19 @@
-﻿#captcha-canvas {
-    background-color: #f8f9fa;
-    cursor: crosshair;
-    display: block;
-    margin: 0 auto;
+﻿.captcha-status {
+    margin-top: 8px;
+    font-size: 0.9em;
 }
 
-#captcha-digit {
-    font-size: 1.2em;
-    color: #dc3545;
+    .captcha-status.valid {
+        color: #28a745;
+    }
+
+    .captcha-status.invalid {
+        color: #dc3545;
+    }
+
+#captcha-canvas {
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    touch-action: none;
+    background: white;
 }
