@@ -84,8 +84,7 @@ namespace GrӧkTube.Controllers
             if (ModelState.IsValid)
             {
                 // Проверка капчи
-                if (string.IsNullOrEmpty(dto.CaptchaDrawnDigit) ||
-                    dto.CaptchaDrawnDigit != dto.CaptchaExpectedDigit) 
+                if (dto.CaptchaDrawnDigit != dto.CaptchaExpectedDigit) 
                 {
                     ModelState.AddModelError("CaptchaDrawnDigit", "Пожалуйста, правильно нарисуйте цифру");
                     dto.CaptchaExpectedDigit = new Random().Next(0, 10).ToString();
@@ -110,7 +109,7 @@ namespace GrӧkTube.Controllers
                 };
 
                 _userDAO.SaveUsers(user);
-                await Login(user.Login, user.HashPassword);
+               // await Login(user.Login, user.HashPassword);
 
                   UserModel userModel = new UserModel()
                 {
