@@ -62,23 +62,19 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label">Капча: нарисуйте цифру <span id="captcha-digit" class="fw-bold">@Model.CaptchaExpectedDigit</span></label>
+                            <label class="form-label">
+                                Капча: выберите все цифры
+                                <span id="captcha-digit" class="fw-bold">@Model.CaptchaExpectedDigit</span>
+                            </label>
                             <input type="hidden" asp-for="CaptchaExpectedDigit" value="@Model.CaptchaExpectedDigit" />
                             <input type="hidden" asp-for="CaptchaDrawnDigit" id="drawn-digit" />
 
-                            <div class="card mb-2">
-                                <div class="card-body p-2">
-                                    <canvas id="captcha-canvas" width="200" height="100"
-                                            style="border:1px solid #ddd; touch-action: none;"></canvas>
-                                </div>
+                            <div class="position-relative captcha-container">
+                                <canvas id="captcha-canvas" width="250" height="250"></canvas>
+                                <div class="captcha-status" id="captcha-status"></div>
                             </div>
 
-                            <button type="button" id="clear-canvas" class="btn btn-sm btn-outline-secondary">
-                                Очистить
-                            </button>
-                            <span asp-validation-for="CaptchaDrawnDigit" class="invalid-feedback"></span>
-                            <div class="form-text">Нарисуйте цифру, показанную выше</div>
-                        </div>
+                          
 
                         
                         <div class="d-grid gap-2">

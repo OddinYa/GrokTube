@@ -1,11 +1,23 @@
-﻿#captcha-canvas {
+﻿.captcha-container {
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    padding: 5px;
+    display: inline-block;
+}
+
+#captcha-canvas {
     background-color: #f8f9fa;
     cursor: crosshair;
     display: block;
     margin: 0 auto;
 }
 
-#captcha-digit {
-    font-size: 1.2em;
-    color: #dc3545;
+.captcha-status {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    text-shadow: 0 0 3px white;
+    pointer-events: none;
 }
