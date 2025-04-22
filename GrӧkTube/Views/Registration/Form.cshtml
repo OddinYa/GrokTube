@@ -74,7 +74,7 @@
                                 <div class="captcha-status" id="captcha-status"></div>
                             </div>
 
-                          
+                          </div>
 
                         
                         <div class="d-grid gap-2">
@@ -114,24 +114,42 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     
     <script>
-        
         (function () {
-            'use strict'
-            
-            var forms = document.querySelectorAll('.needs-validation')
-            
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
-                        
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-        })()
+            'use strict';
+
+            var forms = document.querySelectorAll('.needs-validation');
+
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    // 1. Стандартная валидация
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        form.classList.add('was-validated');
+                        return;
+                    }
+
+                    // 2. Проверка капчи (объединенная версия)
+                    const isCaptchaValid = window.captchaHandler ? window.captchaHandler.validate() : false;
+
+                    if (!isCaptchaValid) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        document.getElementById('captcha-status').textContent = '❌ Сначала решите капчу!';
+                        if (window.captchaHandler) window.captchaHandler.regenerate();
+
+                        // Анимация ошибки
+                        const btn = form.querySelector('button[type="submit"]');
+                        btn.classList.add('btn-error-shake');
+                        setTimeout(() => btn.classList.remove('btn-error-shake'), 500);
+                        return;
+                    }
+
+                    // 3. Если все проверки пройдены
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
 
 
         document.addEventListener('DOMContentLoaded', function () {
