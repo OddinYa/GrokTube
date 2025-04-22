@@ -1,4 +1,4 @@
-using GrӧkTube.Models;
+﻿using GrӧkTube.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -14,24 +14,19 @@ namespace GrӧkTube.Controllers
         }
 
         public IActionResult Index()
-        {
-            return View();
+        {   
+            
+
+            return View(null);
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+        
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        [HttpGet]
-        public async Task<IActionResult> Stub()
-        {
-            return View();
-        }
+        
     }
 }

@@ -1,0 +1,179 @@
+﻿@model GrӧkTube.Models.DTO.RegistrationDto
+
+<script src="~/js/form.js"></script>
+
+
+<div class="container mt-5">
+    <div class="row justify-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow">
+                <div class="card-header bg-danger bg-gradient text-white">
+                    <h3 class="card-title text-center mb-0">Регистрация в GrӧkTube</h3>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form asp-action="Form" method="post" class="needs-validation" novalidate>
+                       
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">Имя</label>
+                            <input asp-for="Name" class="form-control" placeholder="Введите ваше имя" required>
+                            <span asp-validation-for="Name" class="invalid-feedback"></span>
+                            <div class="form-text">От 2 до 50 символов</div>
+                        </div>
+
+                       
+                        <div class="mb-3">
+                            <label asp-for="Login" class="form-label">Логин</label>
+                            <div class="input-group">
+                                <span class="input-group-text">@@</span>
+                                <input asp-for="Login" class="form-control" placeholder="Придумайте логин" required>
+                            </div>
+                            <span asp-validation-for="Login" class="invalid-feedback"></span>
+                            <div class="form-text">3-20 символов (только буквы, цифры и _)</div>
+                        </div>
+
+                      
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label">Пароль</label>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="Не менее 6 символов" required>
+                            <span asp-validation-for="Password" class="invalid-feedback"></span>
+                        </div>
+
+                       
+                        <div class="mb-3">
+                            <label asp-for="ConfirmPassword" class="form-label">Подтвердите пароль</label>
+                            <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Повторите пароль" required>
+                            <span asp-validation-for="ConfirmPassword" class="invalid-feedback"></span>
+                        </div>
+
+                       
+                        <div class="mb-4">
+                            <label asp-for="Race" class="form-label">Выберите расу</label>
+                            <select asp-for="Race" class="form-select" required>
+                                <option value="" disabled selected>-- Выберите вашу расу --</option>
+                                <option value="Человек">Человек</option>
+                                <option value="Эльф">Эльф</option>
+                                <option value="Гном">Гном</option>
+                                <option value="Орк">Орк</option>
+                                <option value="Дварф">Дварф</option>
+                                <option value="Тролль">Тролль</option>
+                            </select>
+                            <span asp-validation-for="Race" class="invalid-feedback"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">
+                                Капча: выберите все цифры
+                                <span id="captcha-digit" class="fw-bold">@Model.CaptchaExpectedDigit</span>
+                            </label>
+                            <input type="hidden" asp-for="CaptchaExpectedDigit" value="@Model.CaptchaExpectedDigit" />
+                            <input type="hidden" asp-for="CaptchaDrawnDigit" id="drawn-digit" />
+
+                            <div class="position-relative captcha-container">
+                                <canvas id="captcha-canvas" width="250" height="250"></canvas>
+                                <div class="captcha-status" id="captcha-status"></div>
+                            </div>
+
+                          
+
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger btn-lg">
+                                <i class="bi bi-person-plus me-2"></i>Зарегистрироваться
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="card-footer text-muted text-center">
+                    Уже есть аккаунт? <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#authModal">Войти</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <style>
+        .card {
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 10px 15px;
+        }
+        .btn-primary {
+            border-radius: 8px;
+            padding: 12px;
+        }
+    </style>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        
+        (function () {
+            'use strict'
+            
+            var forms = document.querySelectorAll('.needs-validation')
+            
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Проверяем, находимся ли мы на странице регистрации
+            if (window.location.pathname.toLowerCase().includes('form')) {
+                // Скрываем dropdown-menu
+                const dropdownMenu = document.querySelector('.dropdown-menu');
+                if (dropdownMenu) {
+                    dropdownMenu.style.display = 'none';
+                }
+
+                // Скрываем sidebar
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar) {
+                    sidebar.style.display = 'none';
+                }
+
+                if (window.location.pathname.toLowerCase().includes('form')) {
+                    const sidebarToggle = document.getElementById('sidebarToggle');
+                    sidebarToggle?.remove();
+                }
+                
+                sidebar?.remove();
+            }
+        });
+
+        // Проверка совпадения паролей на клиенте
+        document.addEventListener('DOMContentLoaded', function () {
+            const password = document.querySelector('input[name="Password"]');
+            const confirmPassword = document.querySelector('input[name="ConfirmPassword"]');
+
+            function validatePassword() {
+                if (password.value !== confirmPassword.value) {
+                    confirmPassword.setCustomValidity("Пароли не совпадают");
+                } else {
+                    confirmPassword.setCustomValidity('');
+                }
+            }
+
+            password.addEventListener('change', validatePassword);
+            confirmPassword.addEventListener('keyup', validatePassword);
+        });
+       
+    </script>
+}

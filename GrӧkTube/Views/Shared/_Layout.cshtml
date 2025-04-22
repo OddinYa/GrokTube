@@ -1,14 +1,59 @@
-﻿<!DOCTYPE html>
+﻿@using GrӧkTube.Models;
+@{
+    var user = ViewBag.User as UserModel;
+}
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - GrӧkTube</title>
+
+    <link rel="icon" type="image/png" href ="~/img/logo.png" />
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
+
+    <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="authModalLabel">Авторизация</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="loginForm" method="post" asp-controller="Registration" asp-action="Login">
+                    <div class="modal-body">
+
+                      <div id="loginError" class="alert alert-danger mb-3" style="display: none;"></div>
+
+                        <div class="mb-3">
+                            <label for="login" class="form-label">Логин</label>
+                            <input type="text" class="form-control" id="login" name="login" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Пароль</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="submit" class="btn btn-primary" id="loginSubmitBtn">
+                            <span id="loginBtnText">Войти</span>
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Form", "Registration")'">
+                            Регистрация
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <header>
         <div class="backdrop" id="backdrop"></div>
         <nav class="navbar navbar-expand-md navbar-light border-bottom fixed-top">
@@ -37,11 +82,55 @@
                     <button class="btn btn-link text-dark">
                         <i class="fas fa-bell"></i>
                     </button>
-                    <div class="ms-3">
-                        <img src="https://zefirka.club/uploads/posts/2023-01/1673278260_2-zefirka-club-p-serii-chelovek-na-avu-2.png"
-                             class="rounded-circle avatar-img"
-                             alt="Гость">
+
+                    @if (user == null) {
+                     
+                        <div class="ms-3 dropdown">
+                            <img src="https://zefirka.club/uploads/posts/2023-01/1673278260_2-zefirka-club-p-serii-chelovek-na-avu-2.png"
+                            class="rounded-circle avatar-img dropdown-toggle"
+                            id="userDropdown"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            alt="Гость">
+
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <div class="px-4 py-3">
+                                    <h6 class="mb-0">Гость</h6>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#authModal">
+                                        <i class="fas fa-sign-in me-2"></i>Войти
+                                    </a>
+                            </div>
+                        </div>
+                    }else{
+                    <div class="ms-3 dropdown">
+                        <img src=@user.AvatarUrl
+                             class="rounded-circle avatar-img dropdown-toggle"
+                             id="userDropdown"
+                             data-bs-toggle="dropdown"
+                             aria-expanded="false"
+							  alt=Model.Username>
+
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <div class="px-4 py-3">
+                                <h6 class="mb-0">@user.Username</h6>
+                                <small class="text-muted">user@example.com</small>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-user me-2"></i>Профиль
+                            </a>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-cog me-2"></i>Настройки
+                            </a>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-sign-out-alt me-2"></i>Выйти
+                            </a>
+                        </div>
                     </div>
+					 }
+
                 </div>
             </div>
         </nav>
@@ -49,20 +138,24 @@
 
     <aside class="sidebar" id="sidebar">
         <nav class="nav flex-column">
-            <a class="nav-link" href="#">
+            <a class="nav-link" asp-controller="Home" asp-action="Index">
                 <i class="fas fa-home me-3"></i> Главная
             </a>
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#authModal">
+                
                 <i class="fas fa-fire me-3"></i> Тренды
             </a>
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#authModal">
+                
                 <i class="fas fa-users me-3"></i> Подписки
             </a>
             <hr>
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#authModal">
+                
                 <i class="fas fa-bookmark me-3"></i> Закладки
             </a>
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#authModal">
+                
                 <i class="fas fa-history me-3"></i> История просмотра
             </a>
         </nav>
@@ -72,9 +165,75 @@
         @RenderBody()
     </main>
 
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const loginForm = document.getElementById('loginForm');
+            const loginError = document.getElementById('loginError');
+            let isSubmitting = false;
+
+            if (loginForm) {
+                // Отключаем встроенную валидацию
+                loginForm.setAttribute('novalidate', '');
+
+                loginForm.addEventListener('submit', async function (e) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation(); // Блокируем другие обработчики
+
+                    if (isSubmitting) return;
+                    isSubmitting = true;
+
+                   
+                    // Скрываем нашу ошибку
+                    loginError.style.display = 'none';
+                    loginError.textContent = '';
+
+                    // Устанавливаем состояние загрузки
+                    const submitBtn = document.getElementById('loginSubmitBtn');
+                    const originalBtnHtml = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Вход...';
+                    submitBtn.disabled = true;
+
+                    try {
+                        const response = await fetch(loginForm.action, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: new URLSearchParams({
+                                login: document.getElementById('login').value,
+                                password: document.getElementById('password').value
+                            })
+                        });
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            window.location.href = result.redirectUrl || '/';
+                        } else {
+                            loginError.textContent = result.error || 'Неверный логин или пароль';
+                            loginError.style.display = 'block';
+                        }
+                    } catch (error) {
+                        loginError.textContent = 'Ошибка соединения с сервером';
+                        loginError.style.display = 'block';
+                    } finally {
+                        isSubmitting = false;
+                        const submitBtn = document.getElementById('loginSubmitBtn');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnHtml;
+                    }
+                });
+            }
+        });
+    </script>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
+
+
 </html>
