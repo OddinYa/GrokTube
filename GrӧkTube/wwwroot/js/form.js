@@ -1,168 +1,158 @@
-﻿document.addEventListener('DOMContentLoaded', async function () {
-    // Canvas initialization
+﻿document.addEventListener('DOMContentLoaded', function () {
     const canvas = document.getElementById('captcha-canvas');
     const ctx = canvas.getContext('2d');
-    let isDrawing = false;
+    const expectedDigit = parseInt(document.getElementById('captcha-digit').textContent);
+    const drawnDigitInput = document.getElementById('drawn-digit');
+    let numberPositions = [];
+    let clickCount = 0;
+    let validationTriggered = false;
 
-    // Setup drawing context
-    ctx.lineWidth = 15;
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = '#000000';
+    // Генерация чисел
+    function generateNumbers() {
+        numberPositions = [];
+        const numbers = Array(3).fill(expectedDigit);
 
-    // Model loading
-    let model = null;
-
-    async function loadModel() {
-        model = await tf.loadLayersModel('https://storage.googleapis.com/tfjs-models/tfjs/iris_v1/model.json');
-        console.log('Model loaded');
-    }
-
-    await loadModel();
-
-    // Drawing handlers
-    canvas.addEventListener('mousedown', startDrawing);
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', endDrawing);
-    canvas.addEventListener('mouseout', endDrawing);
-
-    // Touch support
-    canvas.addEventListener('touchstart', startDrawing);
-    canvas.addEventListener('touchmove', draw);
-    canvas.addEventListener('touchend', endDrawing);
-
-    function startDrawing(e) {
-        isDrawing = true;
-        const pos = getMousePos(canvas, e);
-        ctx.beginPath();
-        ctx.moveTo(pos.x, pos.y);
-        e.preventDefault();
-    }
-
-    function draw(e) {
-        if (!isDrawing) return;
-        const pos = getMousePos(canvas, e);
-        ctx.lineTo(pos.x, pos.y);
-        ctx.stroke();
-        predictDigit();
-        e.preventDefault();
-    }
-
-    function endDrawing() {
-        isDrawing = false;
-        ctx.beginPath();
-    }
-
-    // Clear button
-    document.getElementById('clear-canvas').addEventListener('click', () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        document.getElementById('drawn-digit').value = '';
-        updateCaptchaStatus('');
-    });
-
-    // Helper functions
-    function getMousePos(canvas, e) {
-        const rect = canvas.getBoundingClientRect();
-        let clientX, clientY;
-
-        if (e.touches) {
-            clientX = e.touches[0].clientX;
-            clientY = e.touches[0].clientY;
-        } else {
-            clientX = e.clientX;
-            clientY = e.clientY;
+        for (let i = 0; i < 7; i++) {
+            let randomDigit;
+            do {
+                randomDigit = Math.floor(Math.random() * 10);
+            } while (randomDigit === expectedDigit);
+            numbers.push(randomDigit);
         }
 
-        return {
-            x: (clientX - rect.left) * (canvas.width / rect.width),
-            y: (clientY - rect.top) * (canvas.height / rect.height)
-        };
+        shuffleArray(numbers);
+        distributeNumbers(numbers);
+        drawNumbers();
     }
 
-    async function predictDigit() {
-        if (!model) return;
+    // Распределение чисел
+    function distributeNumbers(numbers) {
+        numbers.forEach(digit => {
+            let pos, collision;
+            do {
+                collision = false;
+                pos = {
+                    x: Math.random() * (canvas.width - 30) + 15,
+                    y: Math.random() * (canvas.height - 30) + 15,
+                    digit: digit
+                };
 
-        // Preprocess canvas image
-        const tensor = tf.tidy(() => {
-            return tf.browser.fromPixels(canvas)
-                .resizeNearestNeighbor([28, 28])
-                .mean(2)
-                .expandDims(2)  // Добавляем размерность канала -> [28, 28, 1]
-                .expandDims()   // Добавляем батч-размерность -> [1, 28, 28, 1]
-                .toFloat()
-                .div(255.0);
+                numberPositions.forEach(existing => {
+                    const dx = pos.x - existing.x;
+                    const dy = pos.y - existing.y;
+                    if (Math.sqrt(dx * dx + dy * dy) < 30) collision = true;
+                });
+            } while (collision);
+
+            numberPositions.push({ ...pos, selected: false });
+        });
+    }
+
+    // Отрисовка
+    function drawNumbers() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Рамка
+        ctx.strokeStyle = '#ccc';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(0, 0, canvas.width, canvas.height);
+
+        numberPositions.forEach(pos => {
+            ctx.fillStyle = pos.selected ? '#888' : '#000';
+            ctx.font = '24px Arial';
+            ctx.fillText(pos.digit, pos.x - 8, pos.y + 8);
+
+            if (pos.selected) {
+                ctx.strokeStyle = '#dc3545';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, 15, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+        });
+    }
+
+    // Валидация
+    function validate() {
+        const correctNumbers = numberPositions.filter(n => n.digit === expectedDigit);
+        const selectedNumbers = numberPositions.filter(n => n.selected);
+
+        // Проверка условий
+        const isCorrectCount = selectedNumbers.length === 3;
+        const allCorrectSelected = correctNumbers.every(n => n.selected);
+        const noWrongSelected = selectedNumbers.every(n => n.digit === expectedDigit);
+
+        if (isCorrectCount && allCorrectSelected && noWrongSelected) {
+            drawnDigitInput.value = expectedDigit;
+            document.getElementById('captcha-status').textContent = '✅ Верно!';
+            return true;
+        }
+
+        document.getElementById('captcha-status').textContent = '❌ Ошибка!';
+        drawnDigitInput.value = '';
+        return false;
+    }
+
+    // Обработчик клика
+    canvas.addEventListener('click', function (e) {
+        if (validationTriggered) return;
+
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        let selectionChanged = false;
+
+        numberPositions.forEach(pos => {
+            const dx = x - pos.x;
+            const dy = y - pos.y;
+            if (Math.sqrt(dx * dx + dy * dy) < 15) {
+                pos.selected = !pos.selected;
+                selectionChanged = true;
+                clickCount += pos.selected ? 1 : -1;
+            }
         });
 
-        try {
-            // Make prediction
-            const prediction = await model.predict(tensor).data();
-            const digit = prediction.indexOf(Math.max(...prediction));
+        if (selectionChanged) {
+            drawNumbers();
+            document.getElementById('captcha-status').textContent = `Выбрано: ${clickCount}/3`;
 
-            // Update hidden field and status
-            document.getElementById('drawn-digit').value = digit;
-            validateCaptcha(digit);
-        } catch (error) {
-            console.error('Prediction error:', error);
-        } finally {
-            tensor.dispose();
+            if (clickCount === 3) {
+                validationTriggered = true;
+                const isValid = validate();
+
+                if (!isValid) {
+                    setTimeout(() => {
+                        numberPositions.forEach(n => n.selected = false);
+                        clickCount = 0;
+                        validationTriggered = false;
+                        drawNumbers();
+                        document.getElementById('captcha-status').textContent = '';
+                    }, 1000);
+                    generateNumbers();
+                } else {
+                    validationTriggered = false;
+                }
+            }
         }
-    }
+    });
 
-    function validateCaptcha(drawnDigit) {
-        const expectedDigit = parseInt(document.getElementById('CaptchaExpectedDigit').value);
-        const isValid = drawnDigit === expectedDigit;
 
-        updateCaptchaStatus(isValid ? '✓ Правильно' : '✗ Неверно', isValid);
-        return isValid;
-    }
-
-    function updateCaptchaStatus(text, isValid = false) {
-        const status = document.getElementById('captcha-status');
-        status.textContent = text;
-        status.style.color = isValid ? 'green' : 'red';
-    }
-
-    // Form validation override
-    document.querySelector('form').addEventListener('submit', async function (e) {
-        const expected = parseInt(document.getElementById('CaptchaExpectedDigit').value);
-        const drawn = parseInt(document.getElementById('drawn-digit').value);
-
-        if (!validateCaptcha(drawn)) {
+    // Отправка формы
+    document.querySelector('form').addEventListener('submit', function (e) {
+        if (!validate()) {
             e.preventDefault();
-            e.stopPropagation();
-            alert('Пожалуйста, правильно введите капчу!');
+            e.stopImmediatePropagation();
         }
-
-        this.classList.add('was-validated');
     });
+
+    // Утилиты
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+    }
+
+    // Инициализация
+    generateNumbers();
 });
-
-async function trainModel() {
-    const model = tf.sequential({
-        layers: [
-            tf.layers.flatten({ inputShape: [28, 28, 1] }),
-            tf.layers.dense({ units: 128, activation: 'relu' }),
-            tf.layers.dense({ units: 10, activation: 'softmax' }),
-        ]
-    });
-
-    model.compile({
-        optimizer: 'adam',
-        loss: 'categoricalCrossentropy',
-        metrics: ['accuracy']
-    });
-
-    const data = new MnistData();
-    await data.load();
-
-    const batchSize = 512;
-    const trainIterations = 50;
-
-    model.fit(data.trainImages, data.trainLabels, {
-        batchSize,
-        epochs: trainIterations,
-        validationData: [data.testImages, data.testLabels],
-        shuffle: true
-    });
-
-    await model.save('downloads://mnist-model');
-}

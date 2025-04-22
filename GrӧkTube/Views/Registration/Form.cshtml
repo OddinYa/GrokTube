@@ -1,11 +1,6 @@
 ﻿@model GrӧkTube.Models.DTO.RegistrationDto
 
 <script src="~/js/form.js"></script>
-<!-- Import TensorFlow.js -->
-<script src="https://cdn.jsdelivr.net/npm/@@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
-<!-- Import tfjs-vis -->
-<script src="https://cdn.jsdelivr.net/npm/@@tensorflow/tfjs-vis@1.0.2/dist/tfjs-vis.umd.min.js"></script>
-<link rel="stylesheet" href="~/css/captcha.css" />
 
 
 <div class="container mt-5">
@@ -68,24 +63,18 @@
 
                         <div class="mb-4">
                             <label class="form-label">
-                                Капча: нарисуйте цифру
+                                Капча: выберите все цифры
                                 <span id="captcha-digit" class="fw-bold">@Model.CaptchaExpectedDigit</span>
                             </label>
                             <input type="hidden" asp-for="CaptchaExpectedDigit" value="@Model.CaptchaExpectedDigit" />
                             <input type="hidden" asp-for="CaptchaDrawnDigit" id="drawn-digit" />
 
-                            <div class="position-relative">
-                                <canvas id="captcha-canvas" width="280" height="280"></canvas>
+                            <div class="position-relative captcha-container">
+                                <canvas id="captcha-canvas" width="250" height="250"></canvas>
                                 <div class="captcha-status" id="captcha-status"></div>
                             </div>
 
-                            <div class="mt-2">
-                                <button type="button" id="clear-canvas" class="btn btn-sm btn-outline-secondary">
-                                    <i class="bi bi-eraser"></i> Очистить
-                                </button>
-                            </div>
-                            <span asp-validation-for="CaptchaDrawnDigit" class="invalid-feedback"></span>
-                        </div>
+                          
 
                         
                         <div class="d-grid gap-2">
