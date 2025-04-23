@@ -116,7 +116,27 @@ namespace GrӧkTube.Controllers
 					  Username = user.Login,
                       AvatarUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvaFGZs_ToRrlAbs2ecdmB5Rgil9o-ndsVvg&s"
                 };
-            
+
+
+
+            var claims = new List<Claim>
+             {
+                 new Claim(ClaimTypes.Name, user.Login),
+                 new Claim("UserId", user.Id.ToString())
+             };
+
+            var identity = new ClaimsIdentity(claims,
+                CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(identity),
+                new AuthenticationProperties
+                {
+                    IsPersistent = true,
+                    ExpiresUtc = DateTime.UtcNow.AddHours(2)
+                });
+
 
             return RedirectToAction("Index", "Home",userModel);
             }

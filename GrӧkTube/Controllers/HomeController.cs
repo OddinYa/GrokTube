@@ -13,11 +13,15 @@ namespace GrӧkTube.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
-        {   
-            
+        public IActionResult Index(UserModel userModel = null)
+        {
+            if (userModel == null)
+            {
 
-            return View(null);
+            }
+
+            ViewBag.User = userModel;
+            return View();
         }
 
         
