@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using GrӧkTube.Models.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace GrӧkTube.Models.DTO
 {
@@ -7,6 +8,10 @@ namespace GrӧkTube.Models.DTO
         [Required(ErrorMessage = "Имя обязательно")]
         [StringLength(50, MinimumLength = 2, ErrorMessage = "Имя должно быть от 2 до 50 символов")]
         public string Name { get; set; }
+
+        [Required(ErrorMessage = "Номер обязательный")]
+        [DataType(DataType.PhoneNumber)]
+        public string PhoneNumber { get; set; }
 
         [Required(ErrorMessage = "Логин обязателен")]
         [StringLength(20, MinimumLength = 3, ErrorMessage = "Логин должен быть от 3 до 20 символов")]
@@ -26,6 +31,9 @@ namespace GrӧkTube.Models.DTO
         [Required(ErrorMessage = "Выберите расу")]
         [StringLength(20, ErrorMessage = "Название расы слишком длинное")]
         public string Race { get; set; }
+
+        [ImageUrlOrBase64(ErrorMessage = "Некорректный URL изображения")]
+        public string? AvatarUrl { get; set; }
 
 
         [Required(ErrorMessage = "Пожалуйста, нарисуйте цифру")]

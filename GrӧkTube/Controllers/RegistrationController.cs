@@ -10,22 +10,31 @@ using GrӧkTube.Service;
 using GrӧkTube.Models.DTO;
 using System.Reflection;
 using static System.Net.WebRequestMethods;
+using GrӧkTube.Repository;
 
 namespace GrӧkTube.Controllers
 {
     public class RegistrationController : Controller
-    {   
-        private readonly UserDAOImpl _userDAO = new UserDAOImpl();
-        private readonly UserService _userService = new UserService();
+    {
+        private readonly UserDAOImpl _userDAO;
+        private readonly UserService _userService;
+
+
+        public RegistrationController(UserDAOImpl userDAO, UserService userService)
+        {
+            _userDAO = userDAO;
+            _userService = userService;
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> Login(string login, string password)
         {
-            User user = null;
-           // var user = _userDAO.GetUserByLogin(login);
+            
+            var user = _userDAO.FindUser(login, password);
 
           
-            if (user == null || !_userService.IsPasswordCorrect(password, user))
+            if (user == null)
             {
                 return Json(new
                 {
@@ -45,12 +54,12 @@ namespace GrӧkTube.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme);
 
             await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(identity),
-                new AuthenticationProperties
+                  "CookieAuth",
+                     new ClaimsPrincipal(identity),
+                     new AuthenticationProperties
                 {
-                    IsPersistent = true,
-                    ExpiresUtc = DateTime.UtcNow.AddHours(2)
+                 IsPersistent = true,
+                 ExpiresUtc = DateTime.UtcNow.AddHours(2)
                 });
 
             return Json(new
@@ -63,8 +72,8 @@ namespace GrӧkTube.Controllers
 
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home"); 
+            await HttpContext.SignOutAsync("CookieAuth");
+            return RedirectToAction("Index", "Home");
         }
         private bool IsValidUser(string login, string password)
         {
@@ -104,21 +113,37 @@ namespace GrӧkTube.Controllers
                 {
                     Name = dto.Name,
                     Login = dto.Login,
+                    PhoneNumber = dto.PhoneNumber,
                     HashPassword = _userService.GetHashPassword(dto.Password),
-                    Race = dto.Race
+                    Race = dto.Race,
+                    AvatarUrl = string.IsNullOrEmpty(dto.AvatarUrl) ? null : dto.AvatarUrl
+
                 };
 
                 _userDAO.SaveUsers(user);
-               // await Login(user.Login, user.HashPassword);
 
-                  UserModel userModel = new UserModel()
-                {
-					  Username = user.Login,
-                      AvatarUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvaFGZs_ToRrlAbs2ecdmB5Rgil9o-ndsVvg&s"
-                };
-            
 
-            return RedirectToAction("Index", "Home",userModel);
+            var claims = new List<Claim>
+             {
+                 new Claim(ClaimTypes.Name, user.Login),
+                 new Claim("UserId", user.Id.ToString())
+             };
+
+            var identity = new ClaimsIdentity(claims,
+                CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(
+                 "CookieAuth", 
+                 new ClaimsPrincipal(identity),
+                 new AuthenticationProperties
+                 {
+                     IsPersistent = true,
+                     ExpiresUtc = DateTime.UtcNow.AddHours(2)
+                 }
+                 );
+
+
+            return RedirectToAction("Index", "Home");
             }
         
 

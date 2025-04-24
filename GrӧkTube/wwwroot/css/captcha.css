@@ -1,20 +1,37 @@
-﻿.captcha-container {
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    padding: 5px;
-    display: inline-block;
+﻿.captcha-container.captcha-status {
+    margin-top: 8px;
+    font-size: 0.9em;
+}
+
+.captcha-status.valid {
+    color: #28a745;
+}
+
+.captcha-status.invalid {
+    color: #dc3545;
 }
 
 #captcha-canvas {
-    display: block;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    touch-action: none;
+    background: white;
+}
+.btn-error-shake {
+    animation: shake 0.5s;
+    border: 2px solid #dc3545 !important;
 }
 
-.captcha-status {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 24px;
-    text-shadow: 0 0 3px white;
-    pointer-events: none;
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+
+    20%, 60% {
+        transform: translateX(-5px);
+    }
+
+    40%, 80% {
+        transform: translateX(5px);
+    }
 }

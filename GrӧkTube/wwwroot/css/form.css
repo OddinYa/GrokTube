@@ -1,1 +1,15 @@
-﻿
+﻿#avatarPreview {
+    transition: all 0.3s ease;
+    border: 2px solid #dee2e6;
+    background-color: #f8f9fa;
+}
+
+    #avatarPreview:hover {
+        border-color: #dc3545;
+        transform: scale(1.05);
+    }
+
+.form-control:focus + .form-text + #avatarPreview {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
