@@ -21,6 +21,13 @@
                             <div class="form-text">От 2 до 50 символов</div>
                         </div>
 
+                        <div class="mb-3">
+                            <label asp-for="PhoneNumber" class="form-label">Номер телефона</label>
+                            <input asp-for="PhoneNumber" type="tel" class="form-control" placeholder="+7 (XXX) XXX-XX-XX" required>
+                            <span asp-validation-for="PhoneNumber" class="invalid-feedback"></span>
+                            <div class="form-text">Введите номер в международном формате</div>
+                        </div>
+
                        
                         <div class="mb-3">
                             <label asp-for="Login" class="form-label">Логин</label>
@@ -59,6 +66,26 @@
                                 <option value="Тролль">Тролль</option>
                             </select>
                             <span asp-validation-for="Race" class="invalid-feedback"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="AvatarUrl" class="form-label">Аватар (URL) <span class="text-muted">(необязательно)</span></label>
+                            <div class="d-flex gap-3">
+                                <div class="flex-shrink-0">
+                                    <img id="avatarPreview"
+                                         src="@(string.IsNullOrEmpty(Model.AvatarUrl) ? "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" : Model.AvatarUrl)"
+                                         alt="Превью аватара"
+                                         class="img-thumbnail"
+                                         style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;">
+                                </div>
+                                <div class="flex-grow-1">
+                                    <input asp-for="AvatarUrl"
+                                           class="form-control"
+                                           placeholder="https://example.com/avatar.jpg"
+                                           id="avatarUrlInput">
+                                    <div class="form-text">Оставьте пустым, если не хотите указывать аватар</div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="mb-4">
@@ -191,6 +218,34 @@
 
             password.addEventListener('change', validatePassword);
             confirmPassword.addEventListener('keyup', validatePassword);
+        });
+
+        document.getElementById('avatarUrlInput').addEventListener('input', function (e) {
+            const url = e.target.value.trim();
+            const preview = document.getElementById('avatarPreview');
+
+            if (!url) {
+                // Если URL пустой, показываем placeholder
+                preview.src = '';
+                return;
+            }
+
+            // Если это Data URI (Base64), сразу показываем
+            if (url.startsWith('data:image/')) {
+                preview.src = url;
+                return;
+            }
+
+            // Если это обычный URL, проверяем через временное изображение
+            const tempImg = new Image();
+            tempImg.onload = function () {
+                preview.src = url; // Успешная загрузка
+            };
+            tempImg.onerror = function () {
+                // Ошибка загрузки (неверный URL или не изображение)
+                preview.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" fill="%23dc3545"><rect width="100" height="100" rx="8" fill="%23f8d7da"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="12" fill="%23721c24">Неверный URL</text></svg>';
+            };
+            tempImg.src = url;
         });
        
     </script>

@@ -7,9 +7,9 @@ namespace GrӧkTube.Controllers
     public class StubController : Controller
     {
         [HttpGet]
-        public async Task<IActionResult> Stub()
+        public async Task<IActionResult> Error()
         {
-            return View();
+            return View("Stub");
         }
     }
 }

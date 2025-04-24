@@ -160,3 +160,17 @@
     generateNumbers();
 });
 
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Инициализация маски для телефона
+    const phoneInput = document.querySelector('input[type="tel"]');
+    if (phoneInput) {
+        Inputmask({
+            mask: "+7 (999) 999-99-99",
+            showMaskOnHover: false,
+            clearIncomplete: true
+        }).mask(phoneInput);
+    }
+});
+
+
