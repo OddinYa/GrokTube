@@ -48,11 +48,16 @@ namespace GrӧkTube.DAO
            return false;
         }
 
-        public User GetUserByLogin(string login)
+        public User GetUserByLoginAndId(string login,int id)
         {
-           var user = _context.Users.FirstOrDefault(u => u.Login == login);
+           var user = _context.Users.FirstOrDefault(u => u.Login == login && u.Id == id);
 
             return user;
+        }
+
+        public User GetUserByLogin(string login)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -140,23 +140,60 @@
             <a class="nav-link" asp-controller="Home" asp-action="Index">
                 <i class="fas fa-home me-3"></i> Главная
             </a>
+
+            @if(user == null){
             <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#authModal">
                 
                 <i class="fas fa-fire me-3"></i> Тренды
             </a>
-            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#authModal">
-                
-                <i class="fas fa-users me-3"></i> Подписки
+            }
+            else
+            {
+            <a class="nav-link" href="/Stub/Error">
+                <i class="fas fa-fire me-3"></i> Тренды
             </a>
+            }
+
+            @if (user == null)
+            {
+                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#authModal">
+
+                    <i class="fas fa-users me-3"></i> Подписки
+                </a>
+            }
+            else
+            {
+                <a class="nav-link" href="/Stub/Error">
+                    <i class="fas fa-users me-3"></i> Подписки
+                </a>
+            }
+
             <hr>
-            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#authModal">
-                
+            @if (user == null)
+            {
+                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#authModal">
+
                 <i class="fas fa-bookmark me-3"></i> Закладки
-            </a>
-            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#authModal">
+                </a>
+            }
+            else
+            {
+                <a class="nav-link" href="/Stub/Error">
+                    <i class="fas fa-bookmark me-3"></i> Закладки
+                </a>
                 
+            }
+            @if (user == null)
+            {
+                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#authModal">
+
                 <i class="fas fa-history me-3"></i> История просмотра
             </a>
+            }else{
+                <a class="nav-link" href="/Stub/Error">
+                    <i class="fas fa-history me-3"></i> История просмотра
+                </a>
+            }
         </nav>
     </aside>
 
@@ -177,7 +214,7 @@
 
                 loginForm.addEventListener('submit', async function (e) {
                     e.preventDefault();
-                    e.stopImmediatePropagation(); // Блокируем другие обработчики
+                    e.stopImmediatePropagation(); 
 
                     if (isSubmitting) return;
                     isSubmitting = true;

@@ -30,11 +30,11 @@ namespace GrӧkTube.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string login, string password)
         {
-            User user = null;
-           // var user = _userDAO.GetUserByLogin(login);
+            
+            var user = _userDAO.FindUser(login, password);
 
           
-            if (user == null || !_userService.IsPasswordCorrect(password, user))
+            if (user == null)
             {
                 return Json(new
                 {
@@ -121,14 +121,6 @@ namespace GrӧkTube.Controllers
                 };
 
                 _userDAO.SaveUsers(user);
-              
-
-                  UserModel userModel = new UserModel()
-                {       
-					  Username = user.Login,
-                      AvatarUrl = dto.AvatarUrl
-                };
-
 
 
             var claims = new List<Claim>
@@ -151,7 +143,7 @@ namespace GrӧkTube.Controllers
                  );
 
 
-            return RedirectToAction("Index", "Home",userModel);
+            return RedirectToAction("Index", "Home");
             }
         
 

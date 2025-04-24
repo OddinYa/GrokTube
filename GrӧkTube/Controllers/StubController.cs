@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GrӧkTube.Controllers
 {
-    [Authorize]
+    
     public class StubController : Controller
     {
         [HttpGet]
