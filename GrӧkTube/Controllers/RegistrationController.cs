@@ -102,12 +102,7 @@ namespace GrӧkTube.Controllers
                     return View("Form", dto);
                 }
             }
-                // Проверка уникальности логина
-                //      if (_userDAO.LoginExists(dto.Login))
-                //  {
-                //      ModelState.AddModelError(nameof(dto.Login), "Логин уже занят");
-                //      return View(dto);
-                //  }
+               
 
                 var user = new User
                 {
@@ -145,7 +140,9 @@ namespace GrӧkTube.Controllers
 
             return RedirectToAction("Index", "Home");
             }
-        
+
+
+
 
         [HttpGet]
         public async Task<IActionResult> Form()
@@ -158,5 +155,21 @@ namespace GrӧkTube.Controllers
             ViewBag.User = null;
             return View("Form",model);
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> FormPro()
+        {
+            string urlAva = "https://masterpiecer-images.s3.yandex.net/e8c1a89874a011eea380da477c0f1ee2:upscaled";
+
+            RegistrationDto dto = new RegistrationDto()
+            {
+                AvatarUrl = urlAva
+            };
+
+            ViewBag.User = null;
+            return View("FormPro",dto);
+        }
+
     }
 }

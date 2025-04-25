@@ -1,7 +1,6 @@
 ﻿using GrӧkTube.DAO;
 using GrӧkTube.Repository;
 using GrӧkTube.Service;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

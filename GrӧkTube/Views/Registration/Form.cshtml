@@ -3,13 +3,28 @@
 <script src="~/js/form.js"></script>
 <link rel="stylesheet" href="~/css/captcha.css" />
 
+
+
+
+
 <div class="container mt-5">
+    <div class="field" style="position: relative">
+        <!-- Секретная комбинация для PRO-режима -->
+        <div style="position: absolute; right: 0; bottom: -100px">
+            <button onclick="window.location.href='/Registration/FormPro'"
+                    oncontextmenu="this.disabled = true"
+                    ondblclick="this.style.display='none'">
+                🔥 PRO MODE (не нажимать!)
+            </button>
+        </div>
+    </div>
+
     <div class="row justify-center">
         <div class="col-md-8 col-lg-6">
             <div class="card shadow">
                 <div class="card-header bg-danger bg-gradient text-white">
                     <h3 class="card-title text-center mb-0">Регистрация в GrӧkTube</h3>
-                </div>
+                </div>  
                 
                 <div class="card-body p-4">
                     <form asp-action="Form" method="post" class="needs-validation" novalidate>
