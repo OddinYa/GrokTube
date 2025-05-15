@@ -1,19 +1,27 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using GrӧkTube.DAO;
+using GrӧkTube.Repository;
+using GrӧkTube.Service;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
+builder.Services.AddAuthentication("CookieAuth")
+    .AddCookie("CookieAuth",options =>
+    {   
+        options.Cookie.Name = "AuthCookie";
         options.Cookie.HttpOnly = true;
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         options.LoginPath = "/Registration/Login";
-        options.AccessDeniedPath = "/Home/Index";
+        options.AccessDeniedPath = "/Stub/Error";
     });
 
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<GrokRepository>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQLConnection")));
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<UserDAOImpl>();
 
 var app = builder.Build();
 

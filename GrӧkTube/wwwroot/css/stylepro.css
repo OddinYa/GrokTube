@@ -1,0 +1,204 @@
+﻿body {
+    background: url('/img/background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+}
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.7); /* Полупрозрачная белая маска */
+        z-index: -1;
+    }
+
+.card {
+    background: rgba(255, 255, 255, 0.9) !important; /* Полупрозрачный белый фон формы */
+    backdrop-filter: blur(5px); /* Эффект размытия */
+}
+
+/* Добавляем "особенные" стили */
+.form-control {
+    animation: shake 0.5s infinite;
+    background: #FFE !important;
+    transform: rotate(0.5deg);
+}
+
+.form-label {
+    cursor: nesw-resize;
+    text-shadow: 2px 2px #FF0000;
+}
+
+.form-select {
+    transition: all 0.3s;
+    transform: skewX(-10deg);
+}
+
+    .form-select:hover {
+        transform: skewX(10deg) scale(1.1);
+    }
+
+@@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(5px);
+    }
+
+    75% {
+        transform: translateX(-5px);
+    }
+}
+
+.input-group-text {
+    background: #0FF !important;
+    border: 2px dotted #F0F;
+}
+
+.btn-primary {
+    position: relative;
+    transition: none !important;
+}
+
+    .btn-primary:hover {
+        top: -5px;
+        left: -5px;
+    }
+
+#avatarPreview {
+    transition: all 0.5s;
+    filter: hue-rotate(360deg);
+}
+
+
+.color-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+}
+
+.color-box {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    border: 2px solid #fff;
+    transition: transform 0.2s;
+}
+
+    .color-box:hover {
+        transform: scale(1.2);
+    }
+
+/* Анимации */
+#gameContainer {
+    animation: gameFadeIn 0.5s ease-out;
+}
+
+@@keyframes gameFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#playButton {
+    transition: all 0.3s;
+    transform: rotate(0deg);
+}
+
+    #playButton:hover {
+        transform: rotate(5deg) scale(1.1);
+        box-shadow: 0 0 15px #ffd700;
+    }
+
+.fake-submit {
+    position: absolute;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+    .fake-submit:nth-child(2) {
+        left: 10%;
+    }
+
+    .fake-submit:nth-child(3) {
+        left: 40%;
+    }
+
+    .fake-submit:nth-child(4) {
+        left: 70%;
+    }
+
+    .fake-submit:hover {
+        z-index: 100;
+        transform: scale(1.1) rotate(3deg);
+    }
+
+fake-btn {
+    margin: 5px;
+    transition: transform 0.3s;
+}
+
+.fake-btn:hover {
+    transform: scale(1.05);
+}
+
+#realSubmit {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.banner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 99999;
+    display: none;
+}
+
+.annoying-banner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ff0066;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(255,0,102,0.5);
+}
+
+.banner-close {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 15px;
+    height: 15px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    line-height: 1;
+    transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    will-change: transform;
+}

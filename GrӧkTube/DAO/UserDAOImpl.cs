@@ -7,24 +7,25 @@ namespace GrӧkTube.DAO
 {
     public  class UserDAOImpl : IDateServiceUser
     {
-        private UsersTable _userTable;
+        private readonly GrokRepository _context;
         private UserService _userService;
 
-       public UserDAOImpl()
+       public UserDAOImpl(GrokRepository context)
         {
-            _userTable = UsersTable.GetIntanse();
+            _context = context;
             _userService = new UserService();
         }
 
 
         public void SaveUsers(User user)
         {   
-            _userTable.Users.Add(user);
+            _context.Users.Add(user);
+            _context.SaveChanges();
         }
 
         public User GetUser(int id)
         {
-            return _userTable.Users.FirstOrDefault<User>(u => u.Id == id);
+            return _context.Users.FirstOrDefault<User>(u => u.Id == id);
         }
 
         public User FindUser(string login, string password)
@@ -32,7 +33,7 @@ namespace GrӧkTube.DAO
             if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
                 return null;
 
-            var user = _userTable.Users.Where<User>(u => u.Login == login
+            var user = _context.Users.Where<User>(u => u.Login == login
             && u.HashPassword == _userService.GetHashPassword(password)).FirstOrDefault();
 
             return user;
@@ -40,18 +41,23 @@ namespace GrӧkTube.DAO
 
         public bool LoginExists(string login)
         {
-           if(_userTable.Users.Exists(u => u.Login == login))
+           if(_context.Users.Where(u => u.Login == login).FirstOrDefault()!=null)
             {
                 return true;
             }
            return false;
         }
 
-        public User GetUserByLogin(string login)
+        public User GetUserByLoginAndId(string login,int id)
         {
-           var user = _userTable.Users.FirstOrDefault(u => u.Login == login);
+           var user = _context.Users.FirstOrDefault(u => u.Login == login && u.Id == id);
 
             return user;
+        }
+
+        public User GetUserByLogin(string login)
+        {
+            throw new NotImplementedException();
         }
     }
 }
